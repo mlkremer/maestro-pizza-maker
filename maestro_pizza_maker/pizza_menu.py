@@ -1,11 +1,10 @@
 # class representing the pizza menu
 
 from dataclasses import dataclass
-from typing import List, Dict
+from typing import List
 
 import numpy as np
 import pandas as pd
-from pandas import DataFrame
 
 from maestro_pizza_maker.pizza import Pizza
 

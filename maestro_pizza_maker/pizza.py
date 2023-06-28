@@ -3,11 +3,8 @@
 from dataclasses import dataclass
 from typing import List, Literal, Optional
 
-from numpy import ndarray
-
 from maestro_pizza_maker.ingredients import PizzaIngredients
 import numpy as np
-from statistics import mean
 
 
 @dataclass
@@ -85,21 +82,11 @@ class Pizza:
         # fat distribution
         # since fat is a random variable, we will calculate the average fat of the pizza
         # by averaging the fat vectors of the ingredients
-        #
-        # return np.mean(self.fat() / len(self.ingredients)).item()
-        #
-        # ingredients_fat_vectors: np.ndarray = np.array([ingredient.value.fat
-        #                                                 for ingredient in
-        #                                                 self.ingredients])
-        # return np.mean(ingredients_fat_vectors).item()
         return (
             np.array([ingredient.value.fat for ingredient in self.ingredients])
             .mean()
             .item()
         )
-        #
-        # return np.mean(sum(ingredient.value.fat for ingredient in self.ingredients)
-        #                / len(self.ingredients)).item()
 
     @property
     def carbohydrates(self) -> float:
