@@ -3,8 +3,11 @@
 from dataclasses import dataclass
 from typing import List, Literal, Optional
 
+from numpy import ndarray
+
 from maestro_pizza_maker.ingredients import PizzaIngredients
 import numpy as np
+from statistics import mean
 
 
 @dataclass
@@ -77,9 +80,26 @@ class Pizza:
     @property
     def average_fat(self) -> float:
         # TODO: implement average fat calculation
-        # HINT: check the `PizzaIngredients` class properly, you will find a `fat` property there which is a numpy array representing the drawings from the fat distribution
-        # since fat is a random variable, we will calculate the average fat of the pizza by averaging the fat vectors of the ingredients
-        pass
+        # HINT: check the `PizzaIngredients` class properly, you will find a `fat`
+        # property there which is a numpy array representing the drawings from the
+        # fat distribution
+        # since fat is a random variable, we will calculate the average fat of the pizza
+        # by averaging the fat vectors of the ingredients
+        #
+        # return np.mean(self.fat() / len(self.ingredients)).item()
+        #
+        # ingredients_fat_vectors: np.ndarray = np.array([ingredient.value.fat
+        #                                                 for ingredient in
+        #                                                 self.ingredients])
+        # return np.mean(ingredients_fat_vectors).item()
+        return (
+            np.array([ingredient.value.fat for ingredient in self.ingredients])
+            .mean()
+            .item()
+        )
+        #
+        # return np.mean(sum(ingredient.value.fat for ingredient in self.ingredients)
+        #                / len(self.ingredients)).item()
 
     @property
     def carbohydrates(self) -> float:
@@ -94,14 +114,32 @@ class Pizza:
         # TODO: implement name generation, it is purely up to you how you want to do it
         # (you can use random, you can use some kind of algorithm) - just make sure that
         # the name is unique.
-        pass
+        names: list[str] = [ingredient.value.name for ingredient in self.ingredients]
+        return "_".join(names)
 
     @property
     def taste(self) -> np.array:
         # TODO: implement taste function
-        # The famous fact that taste is subjective is not true in this case. We believe that fat is the most important factor, since fat carries the most flavor.
-        # So we will use the fat vector to calculate the taste of the pizza with the following formula:
-        # taste = 0.05 * fat_dough + 0.2 * fat_sauce + 0.3 * fat_cheese + 0.1 * fat_fruits + 0.3 * fat_meat + 0.05 * fat_vegetables
-        pass
+        # The famous fact that taste is subjective is not true in this case.
+        # We believe that fat is the most important factor, since fat carries
+        # the most flavor. So we will use the fat vector to calculate the taste
+        # of the pizza with the following formula:
+        # taste = 0.05 * fat_dough + 0.2 * fat_sauce + 0.3 * fat_cheese
+        # + 0.1 * fat_fruits + 0.3 * fat_meat + 0.05 * fat_vegetables
+        ingredients_fat_vectors_weighted: list[np.ndarray] = []
 
+        for ingredient in self.ingredients:
+            if ingredient.value.type.value == "dough":
+                ingredients_fat_vectors_weighted.append(ingredient.value.fat * 0.05)
+            if ingredient.value.type.value == "sauce":
+                ingredients_fat_vectors_weighted.append(ingredient.value.fat * 0.2)
+            if ingredient.value.type.value == "cheese":
+                ingredients_fat_vectors_weighted.append(ingredient.value.fat * 0.3)
+            if ingredient.value.type.value == "fruits":
+                ingredients_fat_vectors_weighted.append(ingredient.value.fat * 0.1)
+            if ingredient.value.type.value == "meat":
+                ingredients_fat_vectors_weighted.append(ingredient.value.fat * 0.3)
+            if ingredient.value.type.value == "vegetables":
+                ingredients_fat_vectors_weighted.append(ingredient.value.fat * 0.05)
 
+        return np.array(ingredients_fat_vectors_weighted).sum(axis=0)
