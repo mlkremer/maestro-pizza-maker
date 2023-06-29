@@ -19,7 +19,7 @@ def taste_at_risk_pizza(pizza: Pizza, quantile: float) -> float:
     # (thinking of figures of 95% or greater) was given as a parameter,
     # q=quantile would have to be changed to q=(1 - quantile) in numpy's
     # quantile function below.
-    # Apart from that, considering taste in the context of pizzas is similar
+    # Considering taste in the context of pizzas is similar
     # to considering changes in value, gains, or returns of a portfolio in
     # finance: The lower the changes in value, gains, or returns, the worse.
     # Thus, we focus on the left tail of the taste distribution.
@@ -34,12 +34,11 @@ def taste_at_risk_menu(menu: PizzaMenu, quantile: float) -> float:
     # TODO: implement the taste at risk measure for a menu
     # quantile is the quantile that we want to consider
     # Hint: the taste of the whole menu is the sum of the taste of all pizzas in the menu, or? ;)
+    # MK: Taste-wise, I could also imagine that the taste of the whole menu is
+    # the average of the taste of all pizzas or that the taste of the whole menu
+    # is even less than the taste of each pizza considered alone (thinking of e.g.
+    # combining Pizza Hawaii with a pizza with sausage, tuna, and garlic. ;-)
     menu_taste: np.ndarray = sum(pizza.taste for pizza in menu.pizzas)
-    # MK: the taste of the whole menu could also be the average of the taste
-    # of all pizzas.
-    # menu_taste: np.ndarray = np.array([pizza.taste for pizza in menu.pizzas]).mean(
-    #     axis=0
-    # )
     return np.quantile(a=menu_taste, q=quantile).item()
 
 
@@ -55,9 +54,5 @@ def conditional_taste_at_risk_menu(menu: PizzaMenu, quantile: float) -> float:
     # TODO: implement the conditional taste at risk measure for a menu
     # Hint: the taste of the whole menu is the sum of the taste of all pizzas in the menu, or? ;) (same as for the taste at risk)
     menu_taste: np.ndarray = sum(pizza.taste for pizza in menu.pizzas)
-    # If the taste of the whole menu is the average of the taste of all pizzas:
-    # menu_taste: np.ndarray = np.array([pizza.taste for pizza in menu.pizzas]).mean(
-    #     axis=0
-    # )
     tar: float = np.quantile(a=menu_taste, q=quantile).item()
     return menu_taste[menu_taste <= tar].mean().item()
